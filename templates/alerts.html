@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">⚙ Multi-factor trigger settings</h3></div>
+    <div class="grid grid-3">
+      <div class="field">
+        <label>Volume z-score threshold</label>
+        <input type="range" id="z-slider" min="1" max="4.5" step="0.1" />
+        <div class="val" id="z-val">—</div>
+      </div>
+      <div class="field">
+        <label>Cooldown after alert</label>
+        <input type="range" id="cd-slider" min="15" max="300" step="15" />
+        <div class="val" id="cd-val">—</div>
+      </div>
+      <div class="field">
+        <label>Require news confirmation</label>
+        <button class="btn teal" id="news-toggle">—</button>
+      </div>
+    </div>
+    <div id="cooldown-note" class="cooldown-note hidden"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">📨 Test alert channels</h3></div>
+    <p class="small muted" style="margin-bottom:12px">Channels are enabled only when their <code>.env</code> keys are set (see README §8).</p>
+    <div class="grid grid-3">
+      {% for ch, label in [('email', 'Email (SMTP)'), ('sms', 'SMS (Twilio)'), ('telegram', 'Telegram')] %}
+      <div class="field">
+        <label>{{ label }}</label>
+        <button class="btn" data-test-channel="{{ ch }}" {{ '' if cfg.channels[ch] else 'disabled' }}>
+          Send test
+        </button>
+        <div class="tiny muted" id="test-status-{{ ch }}" style="margin-top:6px">
+          {% if not cfg.channels[ch] %}not configured — set {{ ch|upper }} keys in .env{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🔔 Alert log</h3></div>
+    <div id="alert-log"><div class="skeleton" style="height:80px"></div></div>
+  </div>
+
+</div>
+{% endblock %}

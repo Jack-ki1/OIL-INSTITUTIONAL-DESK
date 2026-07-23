@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  <div class="grid grid-3">
+    <div class="panel">
+      <div class="panel-head"><h3 class="panel-title">🕒 Session clock</h3></div>
+      <div id="session-clock"><div class="skeleton" style="height:120px" data-skeleton></div></div>
+    </div>
+
+    <div class="panel sim col-span-2">
+      <div class="panel-head">
+        <h3 class="panel-title">📶 Feed tier <span class="badge-sim">Sim</span></h3>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn {{ 'active' if cfg.feed_tier == 'retail' else '' }}" data-feed-tier="retail">Retail aggregator (REST polling)</button>
+        <button class="btn teal {{ 'active' if cfg.feed_tier == 'institutional' else '' }}" data-feed-tier="institutional">Institutional co-located (FIX/WS)</button>
+      </div>
+      <div class="grid grid-3">
+        <div class="stat" id="stat-latency"><div class="label">Simulated latency</div><div class="value">—</div></div>
+        <div class="stat" id="stat-cadence"><div class="label">Update cadence</div><div class="value">—</div></div>
+        <div class="stat" id="stat-protocol"><div class="label">Protocol</div><div class="value">—</div></div>
+      </div>
+      <p class="small muted" style="margin-top:12px">
+        Flip the toggle — on "Retail aggregator" the price line below only advances on every 4th tick,
+        standing in for a 3-5s REST poll (or a 15-minute-delayed quote from a free provider). This is
+        the concrete cost of not co-locating: the pattern you're trying to detect can be over before a
+        polled feed even shows it happened.
+        {% if cfg.mode == 'live' %}<br><em>In Live mode this toggle only affects simulated order-flow cadence — real yfinance polling has its own real latency.</em>{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="stat" id="stat-wti"><div class="label">WTI</div><div class="value">—</div></div>
+    <div class="stat" id="stat-brent"><div class="label">Brent</div><div class="value">—</div></div>
+    <div class="stat" id="stat-volz"><div class="label">Volume z-score</div><div class="value">—</div></div>
+    <div class="stat" id="stat-loop"><div class="label">Loop Score</div><div class="value">—</div></div>
+  </div>
+
+  <div class="panel {{ 'sim' if cfg.mode != 'live' else '' }}">
+    <div class="panel-head">
+      <h3 class="panel-title">📈 Price — WTI vs Brent
+        {% if cfg.mode == 'live' %}<span class="badge-real">Real</span>{% else %}<span class="badge-sim">Sim</span>{% endif %}
+      </h3>
+    </div>
+    <div style="height:220px"><canvas id="price-chart"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🗄 Data vendors — what production would connect to</h3></div>
+    {% for v in data_vendors %}
+    <div class="vendor-row">
+      <div><span style="color:#e2e8f0;font-weight:500">{{ v.name }}</span> <span class="muted" style="margin-left:8px">{{ v.protocol }}</span></div>
+      <span class="muted">⊘ not connected — requires license</span>
+    </div>
+    {% endfor %}
+    <div class="vendor-row">
+      <div><span style="color:#e2e8f0;font-weight:500">
+        {% if cfg.mode == 'live' %}yfinance (WTI/Brent){% else %}Simulated demo feed{% endif %}</span>
+        <span class="muted" style="margin-left:8px">{% if cfg.mode == 'live' %}Server-side REST (no key){% else %}In-process simulation{% endif %}</span></div>
+      <span class="tone-bull">● connected {% if cfg.mode == 'live' %}(real){% else %}(simulated){% endif %}</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

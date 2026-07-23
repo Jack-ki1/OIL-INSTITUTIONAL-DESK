@@ -1,0 +1,9 @@
+Flask>=3.0.0
+yfinance>=0.2.40
+requests>=2.31.0
+python-dotenv>=1.0.0
+gunicorn>=21.2.0
+pandas>=2.0.0
+pytest>=8.0.0
+# Optional alerting dependency (SMS). Email/Telegram use stdlib + requests.
+twilio>=9.0.0

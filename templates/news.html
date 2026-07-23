@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+  <div class="panel {{ 'sim' if cfg.mode != 'live' else '' }}">
+    <div class="panel-head">
+      <h3 class="panel-title">📰 Wire feed — with lightweight NLP
+        {% if cfg.mode == 'live' %}<span class="badge-real">Real headlines</span>{% else %}<span class="badge-sim">Sim</span>{% endif %}
+      </h3>
+    </div>
+    <p class="small muted" style="margin-bottom:12px">
+      Entity extraction and sentiment use a simple keyword dictionary — a transparent stand-in for a
+      production financial NLP model (e.g. FinBERT) fed by Dow Jones/Reuters/Bloomberg wire APIs.
+      {% if cfg.mode == 'live' %}
+        Headlines here are <strong>real</strong> (NewsAPI), scored by the exact same Python NLP functions used in demo mode.
+      {% else %}
+        Headlines here are drawn from a simulated pool; the NLP model is identical to Live mode — only the source differs.
+      {% endif %}
+    </p>
+    <div id="news-feed"><div class="skeleton" style="height:80px" data-skeleton></div></div>
+  </div>
+</div>
+{% endblock %}

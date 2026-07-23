@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  <div class="grid grid-2">
+    <div class="panel sim">
+      <div class="panel-head"><h3 class="panel-title">📚 Order book imbalance <span class="badge-sim">Sim</span></h3></div>
+      <div id="orderbook"><div class="skeleton" style="height:200px" data-skeleton></div></div>
+    </div>
+
+    <div class="panel {{ 'sim' if cfg.mode != 'live' else '' }}">
+      <div class="panel-head">
+        <h3 class="panel-title">📊 Volume vs session baseline
+          <span id="volume-badge" class="{{ 'badge-real' if cfg.mode == 'live' else 'badge-sim' }}">{{ 'Real' if cfg.mode == 'live' else 'Sim' }}</span>
+        </h3>
+      </div>
+      <div style="height:200px"><canvas id="volume-chart"></canvas></div>
+      <p class="small muted" style="margin-top:8px">Amber bars = volume ≥ {{ cfg.z_threshold }}σ above this session's rolling baseline.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel sim">
+      <div class="panel-head"><h3 class="panel-title">🛡 Iceberg order detection <span class="badge-sim">Sim</span></h3></div>
+      <p class="small muted" style="margin-bottom:8px">Flags price levels receiving 4+ same-side clips in a short window — a classic signature of a large resting order being worked in slices.</p>
+      <div id="icebergs"><div class="skeleton" style="height:60px" data-skeleton></div></div>
+    </div>
+
+    <div class="panel sim">
+      <div class="panel-head"><h3 class="panel-title">🛰 Block trades / dark pool prints <span class="badge-sim">Sim</span></h3></div>
+      <p class="small muted" style="margin-bottom:8px">Large off-book prints — where sizeable accounts hide size instead of showing it on the lit order book.</p>
+      <div id="darkpool"><div class="skeleton" style="height:60px" data-skeleton></div></div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

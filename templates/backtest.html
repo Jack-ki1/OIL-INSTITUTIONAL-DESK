@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">📐 Historical break events used for calibration</h3></div>
+    {% for ev in historical_events %}
+    <div class="alert-card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:600;color:#e2e8f0">{{ ev.title }}</span>
+        <span class="mono tiny muted">{{ ev.date }}</span>
+      </div>
+      <p class="small muted" style="margin:4px 0">{{ ev.detail }}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:10px">
+        <span class="factor unmet">move: {{ ev.move }}</span>
+        <span class="factor na">what preceded it: {{ ev.prior_signal }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🧪 Real backtest runner</h3></div>
+    <p class="small muted" style="margin-bottom:12px">
+      This runs real Python over real yfinance history — per-session volume-anomaly detection with
+      true forward returns and win rates. Different symbols / windows produce genuinely different
+      numbers (not the illustrative table below).
+    </p>
+    <form id="backtest-form" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+      <div class="field">
+        <label>Symbol</label>
+        <select id="bt-symbol" class="btn">
+          <option value="{{ wti_symbol }}">WTI ({{ wti_symbol }})</option>
+          <option value="{{ brent_symbol }}">Brent ({{ brent_symbol }})</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Period</label>
+        <select id="bt-period" class="btn">
+          <option value="30d">30d</option>
+          <option value="60d" selected>60d</option>
+          <option value="90d">90d</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Interval</label>
+        <select id="bt-interval" class="btn">
+          <option value="1h" selected>1h</option>
+          <option value="1d">1d</option>
+        </select>
+      </div>
+      <button type="submit" id="bt-run" class="btn active">Run backtest</button>
+    </form>
+    <div id="bt-results" style="margin-top:16px">
+      <div class="empty-state">Run a backtest to compute real per-session signal stats.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">📉 Signal-to-noise by session (illustrative)</h3></div>
+    <p class="small tone-amber" style="margin-bottom:12px">
+      These numbers are illustrative placeholders showing the <em>shape</em> of a calibration report —
+      not a real measured backtest. Use the Real backtest runner above for genuine figures.
+    </p>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>Session</th><th>Alerts fired</th><th>Preceded a &gt;1% move</th><th>False alarms</th><th>Win rate</th>
+      </tr></thead>
+      <tbody class="mono">
+        <tr><td>Asian</td><td>34</td><td class="tone-bull">19</td><td class="tone-bear">15</td><td class="tone-amber">56%</td></tr>
+        <tr><td>London</td><td>41</td><td class="tone-bull">27</td><td class="tone-bear">14</td><td class="tone-amber">66%</td></tr>
+        <tr><td>New York</td><td>58</td><td class="tone-bull">39</td><td class="tone-bear">19</td><td class="tone-amber">67%</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

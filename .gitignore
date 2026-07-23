@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.venv/
+venv/
+env/
+.env
+data/signals.db
+*.sqlite
+*.sqlite3
+.DS_Store

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Oil Session Radar — Institutional Desk</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body data-page="{{ page }}" data-mode="{{ cfg.mode }}">
+
+  <div class="sim-banner">&#9432; {{ banner }}</div>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-row">
+        <h1 class="brand">OIL SESSION RADAR <span class="accent">/ INSTITUTIONAL DESK</span></h1>
+        <div class="header-meta">
+          <span><span class="live-dot"></span><span id="mode-label">{{ 'Live data feed' if cfg.mode == 'live' else 'Simulated feed live' }}</span> · tick #<span id="tick-count">—</span></span>
+          <span id="feed-tier-label">{{ 'FIX/WS' if cfg.feed_tier == 'institutional' else 'REST poll' }}</span>
+          <span class="mode-toggle" title="Live mode auto-enables when API keys are configured (see README).">
+            <button class="pill {{ 'active' if cfg.mode == 'simulated' else '' }}" data-mode="simulated">Simulated</button>
+            <button class="pill {{ 'active' if cfg.mode == 'live' else '' }} {{ '' if cfg.live_available else 'disabled' }}"
+                    data-mode="live" {{ '' if cfg.live_available else 'disabled' }}>Live</button>
+          </span>
+        </div>
+      </div>
+      <nav class="tab-nav">
+        <a href="{{ url_for('views.overview') }}" class="{{ 'active' if page == 'overview' else '' }}">Overview</a>
+        <a href="{{ url_for('views.orderflow') }}" class="{{ 'active' if page == 'orderflow' else '' }}">Order Flow</a>
+        <a href="{{ url_for('views.news') }}" class="{{ 'active' if page == 'news' else '' }}">News Wire</a>
+        <a href="{{ url_for('views.alerts') }}" class="{{ 'active' if page == 'alerts' else '' }}">Alert Center</a>
+        <a href="{{ url_for('views.backtest') }}" class="{{ 'active' if page == 'backtest' else '' }}">Backtest &amp; Calibration</a>
+        <a href="{{ url_for('views.infrastructure') }}" class="{{ 'active' if page == 'infrastructure' else '' }}">Infrastructure</a>
+        <a href="{{ url_for('views.reference') }}" class="{{ 'active' if page == 'reference' else '' }}">Reference</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer>
+    Prototype built to demonstrate institutional market-microstructure monitoring concepts —
+    not a trading system, not financial advice.
+  </footer>
+
+  <div id="reconnecting" class="reconnecting hidden">reconnecting…</div>
+
+  <script>window.APP_CONFIG = {{ cfg | tojson }};</script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/sessionClock.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/orderbook.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/alertsPage.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/backtestPage.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/stream.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🖧 Pipeline (what production infrastructure looks like)</h3></div>
+    <div class="pipeline">
+      {% for stage in pipeline_stages %}
+      <div class="stage">
+        <span class="stage-icon">◆</span>
+        <span class="label">{{ stage }}</span>
+      </div>
+      {% if not loop.last %}<span class="arrow">›</span>{% endif %}
+      {% endfor %}
+    </div>
+    <p class="small muted" style="margin-top:12px">
+      Kafka gives durable, replayable ingestion so no tick is lost if a consumer restarts; Flink runs
+      the windowed volume z-score and order-flow calculations in-stream instead of in a database query;
+      Redis holds the last few minutes of state in memory so alert evaluation never touches disk.
+      None of this runs here — this diagram is a reference architecture, not a live system.
+    </p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">⏱ Latency budget waterfall</h3></div>
+    <div style="height:240px"><canvas id="latency-chart"></canvas></div>
+    <p class="small muted" style="margin-top:8px">
+      Total simulated path: <span class="mono" style="color:#cbd5e1">{{ latency_total }} ms</span>.
+      Notice detection itself (the first five hops) is sub-15ms — the actual bottleneck is
+      <span class="tone-amber">alert delivery</span> over a public API (email/SMS/Telegram), which is
+      20-800× slower than everything upstream of it.
+    </p>
+  </div>
+
+</div>
+<script>
+  window.LATENCY_BUDGET = {{ latency_budget | tojson }};
+  document.addEventListener("DOMContentLoaded", function () {
+    window.Charts.latencyChart("latency-chart", window.LATENCY_BUDGET);
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stack">
+
+  {% if eia_prices or alpha_prices %}
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">💲 Official reference prices <span class="badge-real">Real</span></h3></div>
+    <div class="grid grid-4">
+      {% if eia_prices and eia_prices.wti is defined %}<div class="stat"><div class="label">EIA WTI (Cushing)</div><div class="value mono">${{ '%.2f'|format(eia_prices.wti) }}</div></div>{% endif %}
+      {% if eia_prices and eia_prices.brent is defined %}<div class="stat"><div class="label">EIA Brent (Europe)</div><div class="value mono">${{ '%.2f'|format(eia_prices.brent) }}</div></div>{% endif %}
+      {% if alpha_prices and alpha_prices.wti is defined %}<div class="stat"><div class="label">Alpha Vantage WTI</div><div class="value mono">${{ '%.2f'|format(alpha_prices.wti) }}</div></div>{% endif %}
+      {% if alpha_prices and alpha_prices.brent is defined %}<div class="stat"><div class="label">Alpha Vantage Brent</div><div class="value mono">${{ '%.2f'|format(alpha_prices.brent) }}</div></div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🏛 Physical trading houses</h3></div>
+    <table>
+      <thead><tr><th>House</th><th>HQ</th><th>Note</th></tr></thead>
+      <tbody>
+        {% for h in trading_houses %}
+        <tr><td style="color:#e2e8f0">{{ h.name }}</td><td class="muted">{{ h.hq }}</td><td class="small muted">{{ h.note }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">⚓ Major ports</h3></div>
+    <table>
+      <thead><tr><th>Port</th><th>Country</th><th>Role</th></tr></thead>
+      <tbody>
+        {% for p in major_ports %}
+        <tr><td style="color:#e2e8f0">{{ p.name }}</td><td class="muted">{{ p.country }}</td><td class="small muted">{{ p.role }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3 class="panel-title">🌊 Chokepoints</h3></div>
+    <table>
+      <thead><tr><th>Chokepoint</th><th>Approx. flow</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        {% for c in chokepoints %}
+        <tr><td style="color:#e2e8f0">{{ c.name }}</td><td class="mono muted">{{ c.flow }}</td><td class="small muted">{{ c.note }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}
